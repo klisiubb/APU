@@ -1,0 +1,294 @@
+
+R version 4.4.0 (2024-04-24 ucrt) -- "Puppy Cup"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R jest oprogramowaniem darmowym i dostarczany jest BEZ JAKIEJKOLWIEK GWARANCJI.
+Możesz go rozpowszechniać pod pewnymi warunkami.
+Wpisz 'license()' lub 'licence()' aby uzyskać szczegóły dystrybucji.
+
+R jest projektem kolaboracyjnym z wieloma uczestnikami.
+Wpisz 'contributors()' aby uzyskać więcej informacji oraz
+'citation()' aby dowiedzieć się jak cytować R lub pakiety R w publikacjach.
+
+Wpisz 'demo()' aby zobaczyć demo, 'help()' aby uzyskać pomoc on-line, lub
+'help.start()' aby uzyskać pomoc w przeglądarce HTML.
+Wpisz 'q()' aby wyjść z R.
+
+> install.packages("C50")
+Instalowanie pakietu w ‘C:/Users/klism/AppData/Local/R/win-library/4.4’
+(ponieważ ‘lib’ nie jest określony)
+instalowanie dodatkowych zależności ‘plyr’, ‘reshape2’, ‘libcoin’, ‘mvtnorm’, ‘Formula’, ‘inum’, ‘Cubist’, ‘partykit’
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/plyr_1.8.9.zip'
+Content type 'application/zip' length 1107908 bytes (1.1 MB)
+downloaded 1.1 MB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/reshape2_1.4.4.zip'
+Content type 'application/zip' length 439124 bytes (428 KB)
+downloaded 428 KB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/libcoin_1.0-10.zip'
+Content type 'application/zip' length 816555 bytes (797 KB)
+downloaded 797 KB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/mvtnorm_1.2-4.zip'
+Content type 'application/zip' length 756002 bytes (738 KB)
+downloaded 738 KB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/Formula_1.2-5.zip'
+Content type 'application/zip' length 161370 bytes (157 KB)
+downloaded 157 KB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/inum_1.0-5.zip'
+Content type 'application/zip' length 39677 bytes (38 KB)
+downloaded 38 KB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/Cubist_0.4.2.1.zip'
+Content type 'application/zip' length 890534 bytes (869 KB)
+downloaded 869 KB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/partykit_1.2-20.zip'
+Content type 'application/zip' length 2448199 bytes (2.3 MB)
+downloaded 2.3 MB
+
+próbowanie adresu URL 'https://cran.rstudio.com/bin/windows/contrib/4.4/C50_0.1.8.zip'
+Content type 'application/zip' length 343934 bytes (335 KB)
+downloaded 335 KB
+
+pakiet ‘plyr’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘reshape2’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘libcoin’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘mvtnorm’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘Formula’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘inum’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘Cubist’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘partykit’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+pakiet ‘C50’ został pomyślnie rozpakowany oraz sumy MD5 zostały sprawdzone
+
+Pobrane pakiety binarne są w
+	C:\Users\klism\AppData\Local\Temp\Rtmp2ZVpnY\downloaded_packages
+> library(MASS)
+> require(C50)
+Ładowanie wymaganego pakietu: C50
+> data("bacteria")
+> head(bacteria)
+  y ap hilo week  ID     trt
+1 y  p   hi    0 X01 placebo
+2 y  p   hi    2 X01 placebo
+3 y  p   hi    4 X01 placebo
+4 y  p   hi   11 X01 placebo
+5 y  a   hi    0 X02   drug+
+6 y  a   hi    2 X02   drug+
+> str(bacteria)
+'data.frame':	220 obs. of  6 variables:
+ $ y   : Factor w/ 2 levels "n","y": 2 2 2 2 2 2 1 2 2 2 ...
+ $ ap  : Factor w/ 2 levels "a","p": 2 2 2 2 1 1 1 1 1 1 ...
+ $ hilo: Factor w/ 2 levels "hi","lo": 1 1 1 1 1 1 1 1 2 2 ...
+ $ week: int  0 2 4 11 0 2 6 11 0 2 ...
+ $ ID  : Factor w/ 50 levels "X01","X02","X03",..: 1 1 1 1 2 2 2 2 3 3 ...
+ $ trt : Factor w/ 3 levels "placebo","drug",..: 1 1 1 1 3 3 3 3 2 2 ...
+> bacteria[,'ap'] <- factor(bacteria[,'ap'])
+> str(bacteria)
+'data.frame':	220 obs. of  6 variables:
+ $ y   : Factor w/ 2 levels "n","y": 2 2 2 2 2 2 1 2 2 2 ...
+ $ ap  : Factor w/ 2 levels "a","p": 2 2 2 2 1 1 1 1 1 1 ...
+ $ hilo: Factor w/ 2 levels "hi","lo": 1 1 1 1 1 1 1 1 2 2 ...
+ $ week: int  0 2 4 11 0 2 6 11 0 2 ...
+ $ ID  : Factor w/ 50 levels "X01","X02","X03",..: 1 1 1 1 2 2 2 2 3 3 ...
+ $ trt : Factor w/ 3 levels "placebo","drug",..: 1 1 1 1 3 3 3 3 2 2 ...
+> table(bacteria$ap)
+
+  a   p 
+124  96 
+> m1 <- C5.0(bacteria[1:220,-6],bacteria[1:220,6])
+> summary(m1)
+
+Call:
+C5.0.default(x = bacteria[1:220, -6], y = bacteria[1:220, 6])
+
+
+C5.0 [Release 2.07 GPL Edition]  	Thu May 16 18:43:25 2024
+-------------------------------
+
+Class specified by attribute `outcome'
+
+Read 220 cases (6 attributes) from undefined.data
+
+Decision tree:
+
+ap = p: placebo (96)
+ap = a:
+:...hilo = hi: drug+ (62)
+    hilo = lo: drug (62)
+
+
+Evaluation on training data (220 cases):
+
+	    Decision Tree   
+	  ----------------  
+	  Size      Errors  
+
+	     3    0( 0.0%)   <<
+
+
+	   (a)   (b)   (c)    <-classified as
+	  ----  ----  ----
+	    96                (a): class placebo
+	          62          (b): class drug
+	                62    (c): class drug+
+
+
+	Attribute usage:
+
+	100.00%	ap
+	 56.36%	hilo
+
+
+Time: 0.0 secs
+
+> plot(m1)
+> library(randomForest)
+randomForest 4.7-1.1
+Type rfNews() to see new features/changes/bug fixes.
+> library(e1071)
+> library(party)
+Ładowanie wymaganego pakietu: grid
+Ładowanie wymaganego pakietu: mvtnorm
+Ładowanie wymaganego pakietu: modeltools
+Ładowanie wymaganego pakietu: stats4
+Ładowanie wymaganego pakietu: strucchange
+Ładowanie wymaganego pakietu: zoo
+
+Dołączanie pakietu: ‘zoo’
+
+Następujące obiekty zostały zakryte z ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+Ładowanie wymaganego pakietu: sandwich
+> library(mlr)
+Ładowanie wymaganego pakietu: ParamHelpers
+Warning message: 'mlr' is in 'maintenance-only' mode since July 2019. Future development will only happen in 'mlr3'
+(<https://mlr3.mlr-org.com>). Due to the focus on 'mlr3' there might be uncaught bugs meanwhile in {mlr} - please consider switching.
+
+Dołączanie pakietu: ‘mlr’
+
+Następujący obiekt został zakryty z ‘package:e1071’:
+
+    impute
+
+> library(rFerns)
+> setwd("C:/Users/klism/Documents/GitHub/APU/lab3/")
+> lodowki_turystyczne=read.csv("lodowki.csv")
+> lodowki_turystyczne <- lodowki_turystyczne [1:6]
+> lodowki_turystyczne$nazwa = factor(lodowki_turystyczne$nazwa)
+> lodowki_turystyczne$ocena_klientow = factor(lodowki_turystyczne$ocena_klientow)
+> summarizeColumns(lodowki_turystyczne)
+            name    type na    mean       disp median       mad   min    max nlevs
+1          nazwa  factor  0      NA   0.900000     NA        NA   1.0    2.0    18
+2      pojemnosc numeric  0  27.385   5.620664   28.7   1.40847   4.9   33.0     0
+3           waga numeric  0   4.405   1.061020    4.7   0.37065   1.0    5.5     0
+4           cena integer  0 752.500 427.500385  800.0 481.84500 100.0 1500.0     0
+5  liczba_opinii integer  0  48.000  46.687088   32.5  40.77150   0.0  150.0     0
+6 ocena_klientow  factor  0      NA   0.900000     NA        NA   1.0    2.0    11
+> rdesc = makeResampleDesc("CV", iters = 10)
+> task = makeClassifTask(id = deparse(substitute(lodowki_turystyczne)), lodowki_turystyczne, "ocena_klientow",
++                        weights = NULL, blocking = NULL, coordinates = NULL,
++                        positive = NA_character_, fixup.data = "warn", check.data = TRUE)
+> lrns <- makeLearners(c("rpart", "C50", "ctree", "naiveBayes", "randomForest"), type = "classif")
+> bmr <- benchmark(learners = lrns, tasks = task, rdesc, models = TRUE, measures = list(acc, ber))
+Task: lodowki_turystyczne, Learner: classif.rpart
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+Task: lodowki_turystyczne, Learner: classif.C50
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+Task: lodowki_turystyczne, Learner: classif.ctree
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+Task: lodowki_turystyczne, Learner: classif.naiveBayes
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+Task: lodowki_turystyczne, Learner: classif.randomForest
+Resampling: cross-validation
+Measures:             acc       ber       
+[Resample] iter 1:    0.0000000      NaN  
+[Resample] iter 2:    0.0000000      NaN  
+[Resample] iter 3:    0.0000000      NaN  
+[Resample] iter 4:    0.0000000      NaN  
+[Resample] iter 5:    0.0000000      NaN  
+[Resample] iter 6:    0.0000000      NaN  
+[Resample] iter 7:    0.0000000      NaN  
+[Resample] iter 8:    0.0000000      NaN  
+[Resample] iter 9:    0.0000000      NaN  
+[Resample] iter 10:   0.0000000      NaN  
+
+
+Aggregated Result: acc.test.mean=0.0000000,ber.test.mean=     NaN
+
+
+> p = getBMRPredictions(bmr)
+> plotBMRSummary(bmr)
+> 
+> 
