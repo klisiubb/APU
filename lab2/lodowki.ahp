@@ -1,0 +1,146 @@
+Version: 2
+
+Alternatives: &alternatives
+  Lodowka_1:
+    cena: 185
+    pojemnosc_uzytkowa_chlodziarki: 70
+    pojemnosc_uzytkowa_zamrazarki: 50
+    kolor: czarny
+  Lodowka_2:
+    cena: 150
+    pojemnosc_uzytkowa_chlodziarki: 50
+    pojemnosc_uzytkowa_zamrazarki: 50
+    kolor: bialy
+  Lodowka_3:
+    cena: 240
+    pojemnosc_uzytkowa_chlodziarki: 90
+    pojemnosc_uzytkowa_zamrazarki: 50
+    kolor: czarny
+  Lodowka_4:
+    cena: 350
+    pojemnosc_uzytkowa_chlodziarki: 120
+    pojemnosc_uzytkowa_zamrazarki: 140
+    kolor: srebrny
+  Lodowka_5:
+    cena: 260
+    pojemnosc_uzytkowa_chlodziarki: 100
+    pojemnosc_uzytkowa_zamrazarki: 140
+    kolor: bialy
+  Lodowka_6:
+    cena: 250
+    pojemnosc_uzytkowa_chlodziarki: 100
+    pojemnosc_uzytkowa_zamrazarki: 150
+    kolor: bialy
+  Lodowka_7:
+    cena: 350
+    pojemnosc_uzytkowa_chlodziarki: 200
+    pojemnosc_uzytkowa_zamrazarki: 250
+    kolor: srebrny
+  Lodowka_8:
+    cena: 450
+    pojemnosc_uzytkowa_chlodziarki: 300
+    pojemnosc_uzytkowa_zamrazarki: 350
+    kolor: czarn
+  Lodowka_9:
+    cena: 550
+    pojemnosc_uzytkowa_chlodziarki: 400
+    pojemnosc_uzytkowa_zamrazarki: 450
+    kolor: srebrny
+  Lodowka_10:
+    cena: 650
+    pojemnosc_uzytkowa_chlodziarki: 500
+    pojemnosc_uzytkowa_zamrazarki: 550
+    kolor: bialy
+  Lodowka_11:
+    cena: 275
+    pojemnosc_uzytkowa_chlodziarki: 120
+    pojemnosc_uzytkowa_zamrazarki: 155
+    kolor: bialy
+  Lodowka_12:
+    cena: 375
+    pojemnosc_uzytkowa_chlodziarki: 220
+    pojemnosc_uzytkowa_zamrazarki: 275
+    kolor: czarny
+  Lodowka_13:
+    cena: 475
+    pojemnosc_uzytkowa_chlodziarki: 320
+    pojemnosc_uzytkowa_zamrazarki: 375
+    kolor: srebrny
+  Lodowka_14:
+    cena: 575
+    pojemnosc_uzytkowa_chlodziarki: 420
+    pojemnosc_uzytkowa_zamrazarki: 475
+    kolor: srebrny
+  Lodowka_15:
+    cena: 675
+    pojemnosc_uzytkowa_chlodziarki: 520
+    pojemnosc_uzytkowa_zamrazarki: 575
+    kolor: czarny
+  Lodowka_16:
+    cena: 250
+    pojemnosc_uzytkowa_chlodziarki: 100
+    pojemnosc_uzytkowa_zamrazarki: 150
+    kolor: bialy
+  Lodowka_17:
+    cena: 350
+    pojemnosc_uzytkowa_chlodziarki: 200
+    pojemnosc_uzytkowa_zamrazarki: 250
+    kolor: srebrny
+  Lodowka_18:
+    cena: 450
+    pojemnosc_uzytkowa_chlodziarki: 300
+    pojemnosc_uzytkowa_zamrazarki: 350
+    kolor: bialy
+  Lodowka_19:
+    cena: 550
+    pojemnosc_uzytkowa_chlodziarki: 400
+    pojemnosc_uzytkowa_zamrazarki: 450
+    kolor: czarny
+  Lodowka_20:
+    cena: 650
+    pojemnosc_uzytkowa_chlodziarki: 500
+    pojemnosc_uzytkowa_zamrazarki: 550
+    kolor: bialy
+Goal:
+  name: Zakup lodowki turystycznej
+  preferences:
+    pairwise:
+      - [Wydajnosc, Jakosc, 3]
+      - [Wydajnosc, Cena, 7]
+      - [Wydajnosc, Styl, 9]
+      - [Jakosc, Styl, 5]
+      - [Jakosc, Cena, 3] 
+      - [Styl, Cena, 2]
+  children:
+    Wydajnosc:
+      preferences:
+        #Jak najwieksza  pojemnosc_uzytkowa_chlodziarki
+        pairwiseFunction:
+          function(a1, a2) max(1/9, max(1/9, a1$pojemnosc_uzytkowa_chlodziarki/a2$pojemnosc_uzytkowa_chlodziarki))
+      children: *alternatives 
+
+    Jakosc: 
+       preferences:
+       #Jak najwyższa  pojemnosc_uzytkowa_zamrazarki
+           pairwiseFunction: 
+             function(a1, a2) max(1/9, max(1/9, a1$pojemnosc_uzytkowa_zamrazarki/a2$pojemnosc_uzytkowa_zamrazarki))
+       children: *alternatives	
+
+    Cena:
+      preferences:
+      #Jak najniższa cena
+        pairwiseFunction:
+          function(a1, a2) max(1/9, min(9, a2$cena/a1$cena))
+      children: *alternatives
+
+    Styl: 
+      preferences:
+        pairwiseFunction: >
+          WyborKoloru <- function(a1, a2) {
+            if (a1$kolor == 'czarny' & a2$kolor == 'bialy') return (2)
+            if (a1$kolor == 'srebrny' & a2$kolor == 'czarny') return (3)
+            if (a1$kolor == 'bialy' & a2$kolor == 'srebrny') return (5)
+            if (a1$kolor == a2$kolor) return (1)
+            return (1)
+          }
+      children: *alternatives
