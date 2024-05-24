@@ -1,0 +1,1000 @@
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), position = "identity") +
++   theme_void()
+> # Tworzenie grafów na różnych poziomach
+> # Pierwszy poziom
+> bigram_graph1 <- bigram_counts %>%
++   filter(word1 %in% c("columbus", "explorer", "voyage") | word2 %in% c("columbus", "explorer", "voyage"))
+> # Drugi poziom
+> bigram_graph2 <- bigram_counts %>%
++   filter(word1 %in% bigram_graph1$word1 | word1 %in% bigram_graph1$word2 |
++            word2 %in% bigram_graph1$word1 | word2 %in% bigram_graph1$word2)
+> # Trzeci poziom
+> bigram_graph3 <- bigram_counts %>%
++   filter(word1 %in% bigram_graph2$word1 | word1 %in% bigram_graph2$word2 |
++            word2 %in% bigram_graph2$word1 | word2 %in% bigram_graph2$word2)
+> # Wizualizacja grafów
+> ggraph(bigram_graph1 %>% graph_from_data_frame(), layout = "fr") +
++   geom_edge_link(aes(edge_alpha = n), show.legend = TRUE,
++                  arrow = a, end_cap = circle(.07, "inches")) +
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
++   theme_void()
+> ggraph(bigram_graph2 %>% graph_from_data_frame(), layout = "fr") +
++   geom_edge_link(aes(edge_alpha = n), show.legend = TRUE,
++                  arrow = a, end_cap = circle(.07, "inches")) +
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
++   theme_void()
+> ggraph(bigram_graph3 %>% graph_from_data_frame(), layout = "fr") +
++   geom_edge_link(aes(edge_alpha = n), show.legend = TRUE,
++                  arrow = a, end_cap = circle(.07, "inches")) +
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
++   theme_void()
+> 
+> 
+> 
+> 
+> 
+> # Załadowanie potrzebnych pakietów
+> library(tidytext)
+> library(igraph)
+> library(ggraph)
+> library(dplyr)
+> library(tidyr)
+> # Wczytanie tekstu z pliku
+> fileName <- "text.txt"
+> text <- readChar(fileName, file.info(fileName)$size)
+> # Konwersja tekstu do ramki danych
+> text_df <- data.frame(line = 1, text = text)
+> # Tokenizacja tekstu
+> tidy_text <- text_df %>%
++   unnest_tokens(word, text)
+> # Ładowanie i modyfikowanie stop words
+> data(stop_words)
+> # Dodawanie słów do stop words
+> additional_stop_words <- data.frame(
++   word = c("thy", "hath", "mar’d", "columbus", "christopher"),
++   lexicon = "OLD_WORDS"
++ )
+> stop_words <- rbind(stop_words, additional_stop_words)
+> # Usuwanie stop words z tokenów
+> tidy_text <- tidy_text %>%
++   anti_join(stop_words, by = "word")
+> # Liczenie częstotliwości słów
+> word_counts <- tidy_text %>%
++   count(word, sort = TRUE)
+> print(word_counts)
+              word n
+1         americas 6
+2          america 4
+3         european 4
+4            south 4
+5          castile 3
+6            coast 3
+7       columbus's 3
+8             east 3
+9            world 3
+10            1493 2
+11        american 2
+12          august 2
+13           based 2
+14       beginning 2
+15            bore 2
+16         british 2
+17        catholic 2
+18         central 2
+19       centuries 2
+20        colonial 2
+21    colonization 2
+22        columbia 2
+23       columbian 2
+24           crown 2
+25        diseases 2
+26             era 2
+27     expeditions 2
+28     exploration 2
+29       ferdinand 2
+30      hispaniola 2
+31           human 2
+32       including 2
+33      indigenous 2
+34         islands 2
+35        monarchs 2
+36         october 2
+37          period 2
+38             sea 2
+39             son 2
+40          voyage 2
+41         voyages 2
+42         western 2
+43          widely 2
+44              12 1
+45            1451 1
+46            1492 1
+47            1498 1
+48            1500 1
+49            1502 1
+50            1506 1
+51               2 1
+52              20 1
+53            21st 1
+54              25 1
+55               3 1
+56              31 1
+57               5 1
+58               6 1
+59               7 1
+60               8 1
+61               9 1
+62         accused 1
+63  administrators 1
+64             age 1
+65          agreed 1
+66   anglicisation 1
+67         animals 1
+68        antilles 1
+69           arana 1
+70          arrest 1
+71       astronomy 1
+72        atlantic 1
+73       attention 1
+74           aware 1
+75         bahamas 1
+76            bear 1
+77         beatriz 1
+78          belief 1
+79        bringing 1
+80       brutality 1
+81        canadian 1
+82         capital 1
+83        captured 1
+84       caribbean 1
+85       castilian 1
+86          caused 1
+87      celebrated 1
+88         century 1
+89   christophorus 1
+90           cited 1
+91            city 1
+92         claimed 1
+93        colombia 1
+94          colony 1
+95       committed 1
+96       completed 1
+97        conquest 1
+98         contact 1
+99  contemporaries 1
+100        country 1
+101           cuba 1
+102        culture 1
+103             de 1
+104          death 1
+105   depopulation 1
+106      developed 1
+107          diego 1
+108       district 1
+109            due 1
+110       educated 1
+111        effects 1
+112    encountered 1
+113       enríquez 1
+114   establishing 1
+115         europe 1
+116         events 1
+117       exchange 1
+118       explorer 1
+119      exploring 1
+120         extent 1
+121       features 1
+122         filipa 1
+123      fractured 1
+124          genoa 1
+125   geographical 1
+126      geography 1
+127          ghana 1
+128     governance 1
+129       governor 1
+130        granada 1
+131        growing 1
+132      guanahani 1
+133     habitation 1
+134          haiti 1
+135          harms 1
+136          heirs 1
+137     hemisphere 1
+138   hispaniola's 1
+139        history 1
+140         hoping 1
+141          ideas 1
+142             ii 1
+143    inaugurated 1
+144        indians 1
+145         indies 1
+146         indios 1
+147      influence 1
+148    inhabitants 1
+149       isabella 1
+150         island 1
+151          isles 1
+152        italian 1
+153        journey 1
+154           king 1
+155       kingdoms 1
+156  knowledgeable 1
+157      kəˈlʌmbəs 1
+158       landfall 1
+159        landing 1
+160       landmass 1
+161         lasted 1
+162          latin 1
+163            led 1
+164           left 1
+165         lesser 1
+166        liguria 1
+167         lisbon 1
+168     litigation 1
+169       lobbying 1
+170      lucrative 1
+171        married 1
+172         metals 1
+173   mistreatment 1
+174       mistress 1
+175         modern 1
+176          moniz 1
+177       multiple 1
+178          names 1
+179         native 1
+180        natives 1
+181      navigator 1
+182     noblewoman 1
+183          north 1
+184       northern 1
+185          ocean 1
+186           ohio 1
+187           owed 1
+188        passage 1
+189         people 1
+190        peoples 1
+191     perception 1
+192     perestrelo 1
+193        persist 1
+194     persistent 1
+195           plan 1
+196         plants 1
+197    populations 1
+198     portuguese 1
+199           post 1
+200            pre 1
+201       precious 1
+202     privileges 1
+203         profit 1
+204     protracted 1
+205       province 1
+206         public 1
+207          queen 1
+208        reached 1
+209       referred 1
+210   relationship 1
+211        removal 1
+212        removed 1
+213      renounced 1
+214       republic 1
+215       returned 1
+216           seek 1
+217       separate 1
+218          ships 1
+219    significant 1
+220        slavery 1
+221        spanish 1
+222         sphere 1
+223          spice 1
+224        sponsor 1
+225      sponsored 1
+226         spread 1
+227       strained 1
+228          taíno 1
+229     technology 1
+230          trade 1
+231       transfer 1
+232      travelled 1
+233       trinidad 1
+234            u.s 1
+235      uncertain 1
+236        visited 1
+237            war 1
+238           west 1
+239         wholly 1
+240     widespread 1
+241           word 1
+> # Tworzenie bigramów
+> text_bigrams <- text_df %>%
++   unnest_tokens(bigram, text, token = "ngrams", n = 2)
+> # Liczenie częstotliwości bigramów
+> bigram_counts <- text_bigrams %>%
++   count(bigram, sort = TRUE)
+> print(bigram_counts)
+                     bigram n
+1                    in the 6
+2              the americas 6
+3                    to the 5
+4                   and the 4
+5                    as the 4
+6                    of the 4
+7                  coast of 3
+8              columbus was 3
+9                  from the 3
+10                    a son 2
+11               america in 2
+12                   as far 2
+13             beginning of 2
+14                   bore a 2
+15                   by the 2
+16               castile in 2
+17        catholic monarchs 2
+18     christopher columbus 2
+19             diseases and 2
+20                  he gave 2
+21                   is now 2
+22                 known as 2
+23                   of his 2
+24                old world 2
+25                period of 2
+26            south america 2
+27            the beginning 2
+28             the catholic 2
+29                the crown 2
+30                 the east 2
+31                 the name 2
+32                   was an 2
+33                  what is 2
+34                 who bore 2
+35                 with the 2
+36               12 october 1
+37                  1451 20 1
+38                1492 with 1
+39            1493 trinidad 1
+40                1493 with 1
+41                 1498 and 1
+42                 1500 and 1
+43                1502 many 1
+44                 1506 was 1
+45                2 between 1
+46                   20 may 1
+47             21st century 1
+48                25 august 1
+49                      3 c 1
+50               31 october 1
+51                      5 6 1
+52                      6 7 1
+53                7 largely 1
+54                      8 9 1
+55               9 columbus 1
+56              a castilian 1
+57               a colonial 1
+58                 a colony 1
+59                a journey 1
+60                 a period 1
+61                   a plan 1
+62                a western 1
+63                 a wholly 1
+64                  a young 1
+65               accused by 1
+66               across the 1
+67        administrators in 1
+68                after his 1
+69                after the 1
+70                  age and 1
+71                agreed to 1
+72              america led 1
+73              america the 1
+74            american city 1
+75         american country 1
+76       americas exploring 1
+77             americas his 1
+78            americas into 1
+79             americas now 1
+80              americas on 1
+81            americas were 1
+82                an island 1
+83               an italian 1
+84                   and 31 1
+85                   and as 1
+86              and central 1
+87         and colonization 1
+88           and columbus's 1
+89             and european 1
+90                  and his 1
+91           and hispaniola 1
+92              and history 1
+93                and ideas 1
+94                  and its 1
+95                 and king 1
+96                and later 1
+97                 and made 1
+98         and mistreatment 1
+99            and navigator 1
+100                 and new 1
+101             and removal 1
+102             and removed 1
+103               and south 1
+104           and travelled 1
+105                 and was 1
+106        anglicisation of 1
+107        animals precious 1
+108             antilles in 1
+109               arana who 1
+110               are known 1
+111               are often 1
+112               are still 1
+113              arrest and 1
+114                    as a 1
+115                 as cuba 1
+116            as guanahani 1
+117                 as what 1
+118           astronomy and 1
+119                    at a 1
+120          atlantic ocean 1
+121            attention to 1
+122             august 1492 1
+123              august and 1
+124               aware the 1
+125             b kəˈlʌmbəs 1
+126           bahamas known 1
+127                based in 1
+128           based voyages 1
+129                bear his 1
+130        beatriz enríquez 1
+131               belief he 1
+132              between 25 1
+133             between the 1
+134            bringing the 1
+135        british columbia 1
+136           british isles 1
+137           brutality and 1
+138              but public 1
+139                  by its 1
+140                  by old 1
+141                 by some 1
+142              c explorer 1
+143       canadian province 1
+144             capital the 1
+145        captured natives 1
+146           caribbean and 1
+147             castile and 1
+148      castilian mistress 1
+149               caused by 1
+150           celebrated in 1
+151         central america 1
+152             central and 1
+153         centuries after 1
+154          centuries thus 1
+155             century due 1
+156  christophorus columbus 1
+157                cited as 1
+158           city columbus 1
+159            claimed were 1
+160       clearly renounced 1
+161            colombia the 1
+162 colonial administrators 1
+163       colonial governor 1
+164         colonization of 1
+165       colonization that 1
+166               colony in 1
+167            columbia the 1
+168           columbian era 1
+169      columbian exchange 1
+170              columbus b 1
+171        columbus growing 1
+172             columbus is 1
+173           columbus left 1
+174           columbus made 1
+175           columbus ohio 1
+176       columbus returned 1
+177  columbus's expeditions 1
+178   columbus's persistent 1
+179     columbus's strained 1
+180         committed under 1
+181          completed four 1
+182            conquest and 1
+183            contact with 1
+184       contemporaries of 1
+185              country of 1
+186        crown columbus's 1
+187                crown of 1
+188                cuba and 1
+189           culture human 1
+190                de arana 1
+191               death but 1
+192         depopulation of 1
+193             developed a 1
+194               diego and 1
+195             district of 1
+196                  due to 1
+197              early 1493 1
+198                 east as 1
+199              east coast 1
+200             east indies 1
+201       educated columbus 1
+202           effects which 1
+203         encountered the 1
+204              ending the 1
+205             enríquez de 1
+206                   era 8 1
+207                 era his 1
+208          establishing a 1
+209         europe columbus 1
+210   european colonization 1
+211        european contact 1
+212    european exploration 1
+213         european sphere 1
+214              events and 1
+215          exchange these 1
+216 expeditions inaugurated 1
+217        expeditions were 1
+218         exploration and 1
+219    exploration conquest 1
+220            explorer and 1
+221           exploring the 1
+222               extent to 1
+223                far east 1
+224               far north 1
+225               far south 1
+226   features particularly 1
+227             ferdinand 5 1
+228            ferdinand ii 1
+229            filipa moniz 1
+230             first known 1
+231            first voyage 1
+232            followed his 1
+233           for centuries 1
+234             for several 1
+235                 for the 1
+236            four spanish 1
+237            fractured in 1
+238         from hispaniola 1
+239         further voyages 1
+240                gave the 1
+241                 gave to 1
+242               genoa who 1
+243   geographical features 1
+244     geography astronomy 1
+245                ghana he 1
+246 governance particularly 1
+247       governor columbus 1
+248             granada war 1
+249       greater attention 1
+250              growing up 1
+251            guanahani he 1
+252           habitation in 1
+253             had reached 1
+254          haiti columbus 1
+255         harms committed 1
+256                  he and 1
+257            he developed 1
+258          he encountered 1
+259                  he had 1
+260                he later 1
+261              he married 1
+262                he never 1
+263                 he then 1
+264                  he was 1
+265                 he went 1
+266           heirs claimed 1
+267         hemisphere bear 1
+268              his arrest 1
+269              his belief 1
+270      his contemporaries 1
+271               his death 1
+272         his expeditions 1
+273               his first 1
+274          his governance 1
+275               his heirs 1
+276             his landing 1
+277                his name 1
+278              his voyage 1
+279 hispaniola establishing 1
+280           hispaniola in 1
+281 hispaniola's indigenous 1
+282              history he 1
+283               hoping to 1
+284        human habitation 1
+285       human populations 1
+286                   i and 1
+287           ideas between 1
+288               ii agreed 1
+289                 in 1493 1
+290                 in 1498 1
+291                 in 1500 1
+292                 in 1502 1
+293              in america 1
+294               in august 1
+295                in early 1
+296            in geography 1
+297               in lisbon 1
+298             in multiple 1
+299                  in use 1
+300                 in what 1
+301           inaugurated a 1
+302       including slavery 1
+303           including the 1
+304              indians to 1
+305           indies hoping 1
+306      indigenous peoples 1
+307        indigenous taíno 1
+308          indios indians 1
+309           influence the 1
+310          inhabitants as 1
+311                into the 1
+312                  is the 1
+313            is uncertain 1
+314              isabella i 1
+315               island in 1
+316             islands are 1
+317             islands now 1
+318               isles and 1
+319               italian 3 1
+320            its colonial 1
+321              its native 1
+322            journey west 1
+323          king ferdinand 1
+324            kingdoms the 1
+325        knowledgeable in 1
+326                known by 1
+327          known european 1
+328             kəˈlʌmbəs 2 1
+329             landfall in 1
+330           landing place 1
+331             landmass is 1
+332            largely self 1
+333              lasted for 1
+334                later to 1
+335              later took 1
+336     latin christophorus 1
+337                  led to 1
+338            left castile 1
+339         lesser antilles 1
+340              liguria he 1
+341              lisbon for 1
+342         litigation over 1
+343             lobbying in 1
+344         lucrative spice 1
+345           made landfall 1
+346              made three 1
+347              many names 1
+348             many places 1
+349      married portuguese 1
+350                may 1506 1
+351          metals culture 1
+352  mistreatment including 1
+353        mistress beatriz 1
+354              modern era 1
+355        monarchs opening 1
+356          monarchs queen 1
+357        moniz perestrelo 1
+358       multiple kingdoms 1
+359        name christopher 1
+360          name including 1
+361             name indios 1
+362                names he 1
+363      native inhabitants 1
+364            natives word 1
+365          navigator from 1
+366           never clearly 1
+367               new world 1
+368       noblewoman filipa 1
+369                north as 1
+370          northern coast 1
+371               now ghana 1
+372               now haiti 1
+373               now known 1
+374            now referred 1
+375         ocean sponsored 1
+376            october 1451 1
+377          october ending 1
+378              of british 1
+379              of castile 1
+380              of central 1
+381             of colombia 1
+382             of columbia 1
+383          of exploration 1
+384                of genoa 1
+385         of hispaniola's 1
+386                of human 1
+387            of influence 1
+388              of liguria 1
+389               of plants 1
+390          of significant 1
+391                of south 1
+392             often cited 1
+393                ohio and 1
+394                   on 12 1
+395                  on the 1
+396             opening the 1
+397                over the 1
+398                 owed to 1
+399    particularly islands 1
+400        particularly the 1
+401              passage to 1
+402           people caused 1
+403              peoples he 1
+404    perception fractured 1
+405          perestrelo who 1
+406              persist to 1
+407     persistent lobbying 1
+408               place was 1
+409               places in 1
+410                 plan to 1
+411          plants animals 1
+412  populations technology 1
+413   portuguese noblewoman 1
+414         post columbus's 1
+415           pre columbian 1
+416         precious metals 1
+417             present are 1
+418           privileges he 1
+419             profit from 1
+420   protracted litigation 1
+421             province of 1
+422       public perception 1
+423          queen isabella 1
+424             reached the 1
+425             referred to 1
+426       relationship with 1
+427            removal from 1
+428            removed from 1
+429           renounced his 1
+430             republic of 1
+431             returned to 1
+432                  sea at 1
+433             sea passage 1
+434                  seek a 1
+435           self educated 1
+436       separate landmass 1
+437           several years 1
+438               ships and 1
+439   significant brutality 1
+440            slavery many 1
+441                 some of 1
+442               son diego 1
+443           son ferdinand 1
+444             soon spread 1
+445          south american 1
+446                south as 1
+447           spanish based 1
+448               sphere of 1
+449             spice trade 1
+450               sponsor a 1
+451            sponsored by 1
+452       spread throughout 1
+453                still in 1
+454   strained relationship 1
+455            taíno people 1
+456     technology diseases 1
+457           that followed 1
+458             that lasted 1
+459                the 21st 1
+460            the american 1
+461       the anglicisation 1
+462            the atlantic 1
+463             the bahamas 1
+464             the british 1
+465            the canadian 1
+466           the caribbean 1
+467           the centuries 1
+468               the coast 1
+469           the columbian 1
+470        the depopulation 1
+471            the district 1
+472             the effects 1
+473            the european 1
+474              the extent 1
+475                 the far 1
+476               the first 1
+477             the granada 1
+478               the harms 1
+479          the indigenous 1
+480             the islands 1
+481               the latin 1
+482              the lesser 1
+483           the lucrative 1
+484              the modern 1
+485            the northern 1
+486                 the old 1
+487              the period 1
+488                the post 1
+489                 the pre 1
+490             the present 1
+491          the privileges 1
+492            the republic 1
+493               the south 1
+494            the transfer 1
+495                 the u.s 1
+496                 the way 1
+497             the western 1
+498          the widespread 1
+499                 them by 1
+500            then visited 1
+ [ reached 'max' / getOption("max.print") -- omitted 61 rows ]
+> # Separacja bigramów na pojedyncze słowa
+> bigrams_separated <- text_bigrams %>%
++   separate(bigram, c("word1", "word2"), sep = " ")
+> # Filtracja bigramów z stop words
+> bigrams_filtered <- bigrams_separated %>%
++   filter(!word1 %in% stop_words$word) %>%
++   filter(!word2 %in% stop_words$word)
+> # Liczenie częstotliwości bigramów po filtracji
+> bigram_counts <- bigrams_filtered %>%
++   count(word1, word2, sort = TRUE)
+> print(bigram_counts)
+           word1          word2 n
+1       catholic       monarchs 2
+2          south        america 2
+3             12        october 1
+4           1451             20 1
+5           1493       trinidad 1
+6           21st        century 1
+7             25         august 1
+8             31        october 1
+9              5              6 1
+10             6              7 1
+11             8              9 1
+12       america            led 1
+13      american           city 1
+14      american        country 1
+15      americas      exploring 1
+16       animals       precious 1
+17      atlantic          ocean 1
+18        august           1492 1
+19         based        voyages 1
+20       beatriz       enríquez 1
+21       british       columbia 1
+22       british          isles 1
+23      canadian       province 1
+24      captured        natives 1
+25     castilian       mistress 1
+26       central        america 1
+27       century            due 1
+28      colonial administrators 1
+29      colonial       governor 1
+30     columbian            era 1
+31     columbian       exchange 1
+32    columbus's    expeditions 1
+33    columbus's     persistent 1
+34    columbus's       strained 1
+35         crown     columbus's 1
+36       culture          human 1
+37            de          arana 1
+38          east          coast 1
+39          east         indies 1
+40      enríquez             de 1
+41           era              8 1
+42      european   colonization 1
+43      european        contact 1
+44      european    exploration 1
+45      european         sphere 1
+46   expeditions    inaugurated 1
+47   exploration       conquest 1
+48     ferdinand              5 1
+49     ferdinand             ii 1
+50        filipa          moniz 1
+51  geographical       features 1
+52     geography      astronomy 1
+53       granada            war 1
+54         harms      committed 1
+55         heirs        claimed 1
+56    hemisphere           bear 1
+57    hispaniola   establishing 1
+58  hispaniola's     indigenous 1
+59         human     habitation 1
+60         human    populations 1
+61            ii         agreed 1
+62     including        slavery 1
+63        indies         hoping 1
+64    indigenous        peoples 1
+65    indigenous          taíno 1
+66        indios        indians 1
+67       italian              3 1
+68       journey           west 1
+69          king      ferdinand 1
+70     kəˈlʌmbəs              2 1
+71         latin  christophorus 1
+72          left        castile 1
+73        lesser       antilles 1
+74     lucrative          spice 1
+75       married     portuguese 1
+76        metals        culture 1
+77  mistreatment      including 1
+78      mistress        beatriz 1
+79        modern            era 1
+80      monarchs          queen 1
+81         moniz     perestrelo 1
+82      multiple       kingdoms 1
+83        native    inhabitants 1
+84       natives           word 1
+85    noblewoman         filipa 1
+86      northern          coast 1
+87         ocean      sponsored 1
+88       october           1451 1
+89        people         caused 1
+90    perception      fractured 1
+91    persistent       lobbying 1
+92        plants        animals 1
+93   populations     technology 1
+94    portuguese     noblewoman 1
+95          post     columbus's 1
+96           pre      columbian 1
+97      precious         metals 1
+98    protracted     litigation 1
+99        public     perception 1
+100        queen       isabella 1
+101          sea        passage 1
+102     separate       landmass 1
+103  significant      brutality 1
+104          son          diego 1
+105          son      ferdinand 1
+106        south       american 1
+107      spanish          based 1
+108        spice          trade 1
+109     strained   relationship 1
+110        taíno         people 1
+111   technology       diseases 1
+112    travelled         widely 1
+113          u.s        capital 1
+114      western     hemisphere 1
+115      western            sea 1
+116       wholly       separate 1
+117       widely     celebrated 1
+118   widespread       european 1
+119        world       diseases 1
+> # Łączenie bigramów
+> bigrams_united <- bigrams_filtered %>%
++   unite(bigram, word1, word2, sep = " ")
+> # Tworzenie grafów dla wybranych bigramów
+> # Przykładowo, dla bigramów zawierających "columbus"
+> bigram_graph <- bigram_counts %>%
++   filter(word1 == "columbus" | word2 == "columbus") %>%
++   graph_from_data_frame()
+> # Definicja strzałek do grafów
+> a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+> # Wizualizacja grafu dla bigramów związanych z "columbus"
+> ggraph(bigram_graph, layout = "fr") +
++   geom_edge_link(aes(edge_alpha = n), show.legend = TRUE,
++                  arrow = a, end_cap = circle(.07, "inches")) +
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), position = "identity") +
++   theme_void()
+> # Pierwszy poziom
+> bigram_graph1 <- bigram_counts %>%
++   filter(word1 %in% c("columbus", "explorer", "voyage") | word2 %in% c("columbus", "explorer", "voyage"))
+> # Drugi poziom
+> bigram_graph2 <- bigram_counts %>%
++   filter(word1 %in% bigram_graph1$word1 | word1 %in% bigram_graph1$word2 |
++            word2 %in% bigram_graph1$word1 | word2 %in% bigram_graph1$word2)
+> # Trzeci poziom
+> bigram_graph3 <- bigram_counts %>%
++   filter(word1 %in% bigram_graph2$word1 | word1 %in% bigram_graph2$word2 |
++            word2 %in% bigram_graph2$word1 | word2 %in% bigram_graph2$word2)
+> # Wizualizacja grafów
+> ggraph(bigram_graph1 %>% graph_from_data_frame(), layout = "fr") +
++   geom_edge_link(aes(edge_alpha = n), show.legend = TRUE,
++                  arrow = a, end_cap = circle(.07, "inches")) +
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
++   theme_void()
+> ggraph(bigram_graph2 %>% graph_from_data_frame(), layout = "fr") +
++   geom_edge_link(aes(edge_alpha = n), show.legend = TRUE,
++                  arrow = a, end_cap = circle(.07, "inches")) +
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
++   theme_void()
+> ggraph(bigram_graph3 %>% graph_from_data_frame(), layout = "fr") +
++   geom_edge_link(aes(edge_alpha = n), show.legend = TRUE,
++                  arrow = a, end_cap = circle(.07, "inches")) +
++   geom_node_point(color = "lightblue", size = 5) +
++   geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
++   theme_void()
+> 
+> 
+>
